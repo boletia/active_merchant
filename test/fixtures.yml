@@ -256,6 +256,9 @@ optimal_payment:
   password: test
   account: 'ACCOUNT_NUMBER'
 
+oxxo:
+  login: desarrollo
+
 paybox_direct:
   login: 199988899
   password: 1999888I
