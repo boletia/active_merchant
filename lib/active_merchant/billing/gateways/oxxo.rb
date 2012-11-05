@@ -5,7 +5,7 @@ module ActiveMerchant #:nodoc:
 
             self.supported_countries = ['MX']
             self.homepage_url = 'http://www.banwire.com/'
-            self.display_name = 'Banwire'
+            self.display_name = 'OXXO'
 
             def initialize(options = {})
                 requires!(options, :login)
@@ -13,12 +13,12 @@ module ActiveMerchant #:nodoc:
                 super
             end
 
-            def purchase(options = {})
+            def purchase(money, source, options = {})
                 post = {}
                 add_response_type(post)
                 add_config_data(post, options)
                 add_order_data(post, options)
-                add_amount(post, options)
+                add_amount(money, post, options)
 
                 commit(post)
             end
@@ -32,18 +32,18 @@ module ActiveMerchant #:nodoc:
             def add_config_data(post, options)
                 post[:usuario] = @options[:login]
                 post[:url_respuesta] = options[:notification_url]
-                post[:sendPDF] = options[:send_pdf]
+                post[:sendPDF] = false
                 post[:dias_vigencia] = options[:available_days]
             end
 
             def add_order_data(post, options)
-                post[:referencia] = options[:booking_code]
-                post[:cliente] = options[:full_name]
+                post[:referencia] = options[:order_id]
+                post[:cliente] = options[:name]
                 post[:email] = options[:email]
             end
 
-            def add_amount(post, options)
-                post[:monto] = amount(options[:total])
+            def add_amount(money, post, options)
+                post[:monto] = amount(money)
             end
 
             def parse(body)
