@@ -2,6 +2,8 @@ module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class BanwireGateway < Gateway
       URL = 'https://banwire.com/api.pago_pro'
+      self.test_url = 'https://banwire.com/qa/api.pago_pro'
+      self.live_url = 'https://banwire.com/api.pago_pro'
 
       self.supported_countries = ['MX']
       self.supported_cardtypes = [:visa, :master, :american_express]
@@ -23,6 +25,8 @@ module ActiveMerchant #:nodoc:
         add_address(post, creditcard, options)
         add_customer_data(post, options)
         add_amount(post, money, options)
+        add_deviceid(post, options)
+        add_merchant_data(post, options)
 
         commit(money, post)
       end
@@ -34,7 +38,6 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_customer_data(post, options)
-        post[:user] = @options[:login]
         post[:phone] = options[:billing_address][:phone]
         post[:mail] = options[:email]
       end
@@ -57,6 +60,14 @@ module ActiveMerchant #:nodoc:
         post[:card_ccv2] = creditcard.verification_value
       end
 
+      def add_deviceid(post, options)
+        post[:deviceid] = options[:deviceid]
+      end
+
+      def add_merchant_data(post, options)
+        post[:user] = options.fetch(:login)
+      end
+
       def add_amount(post, money, options)
         post[:ammount] = amount(money)
         post[:currency] = options[:currency]
@@ -72,7 +83,14 @@ module ActiveMerchant #:nodoc:
       end
 
       def commit(money, parameters)
-        response = parse(ssl_post(URL, post_data(parameters)))
+        url = (test? ? test_url : live_url)
+        raw_response = ssl_post(url, post_data(parameters))
+        begin
+          response = parse(raw_response)
+        rescue JSON::ParserError
+          response = json_error(raw_response)
+        end
+
         Response.new(success?(response),
                      response["message"],
                      response,

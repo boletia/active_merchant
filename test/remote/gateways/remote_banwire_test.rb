@@ -9,19 +9,27 @@ class RemoteBanwireTest < Test::Unit::TestCase
     @credit_card = credit_card('5204164299999999',
                                :month => 11,
                                :year => 2012,
-                               :verification_value => '999')
+                               :verification_value => '999',
+                               :brand => 'mastercard')
+
+    @visa_credit_card = credit_card('4485814063899108',
+                                    :month => 12,
+                                    :year => 2016,
+                                    :verification_value => '434')
+
     @declined_card = credit_card('4000300011112220')
 
     @options = {
       :order_id => '1',
       :email => "test@email.com",
       :billing_address => address,
-      :description => 'Store Purchase'
+      :description => 'Store Purchase',
+      :login => 'userdemo'
     }
 
     @amex_credit_card = credit_card('375932134599999',
-                                    :month => 3,
-                                    :year => 2017,
+                                    :month => 10,
+                                    :year => 2014,
                                     :first_name => "Banwire",
                                     :last_name => "Test Card",
                                     :verification_value => '9999',
@@ -30,20 +38,27 @@ class RemoteBanwireTest < Test::Unit::TestCase
     @amex_successful_options = {
         :order_id => '3',
         :email => 'test@email.com',
-        :billing_address => address(:address1 => 'Horacio', :zipcode => '11560'),
-        :description  => 'Store purchase amex'
+        :billing_address => address(:address1 => 'Horacio 930', :zip => '11550'),
+        :description  => 'Store purchase amex',
+        :login => 'userdemo'
     }
 
     @amex_options = {
         :order_id => '2',
         :email => 'test@email.com',
         :billing_address => address,
-        :description  => 'Store purchase amex'
+        :description  => 'Store purchase amex',
+        :login => 'userdemo'
     }
   end
 
   def test_successful_purchase
     assert response = @gateway.purchase(@amount, @credit_card, @options)
+    assert_success response
+  end
+
+  def test_successful_visa_purchase
+    assert response = @gateway.purchase(@amount, @visa_credit_card, @options)
     assert_success response
   end
 
@@ -55,7 +70,7 @@ class RemoteBanwireTest < Test::Unit::TestCase
   def test_unsuccessful_purchase
     assert response = @gateway.purchase(@amount, @declined_card, @options)
     assert_failure response
-    assert_equal 'denied', response.message
+    assert_equal 'La transacción ha sido denegada por seguridad.', response.message
   end
 
   def test_invalid_login
@@ -63,6 +78,7 @@ class RemoteBanwireTest < Test::Unit::TestCase
                 :login => 'fakeuser',
                 :currency => 'MXN'
               )
+    @options.merge!(login: 'fakeuser')
     assert response = gateway.purchase(@amount, @credit_card, @options)
     assert_failure response
     assert_equal 'ID de cuenta invalido', response.message
@@ -70,6 +86,6 @@ class RemoteBanwireTest < Test::Unit::TestCase
 
   def test_invalid_amex_address
     assert response = @gateway.purchase(@amount, @amex_credit_card, @amex_options)
-    assert_equal 'Dirección y código postal requeridos para pagos con AMEX', response.message
+    assert_equal 'Error en los datos de facturación de la tarjeta, por favor inserte su dirección y código postal tal y como viene en su estado de cuenta de American Express. En caso de que persista el error, por favor comuníquese con American Express.', response.message
   end
 end
