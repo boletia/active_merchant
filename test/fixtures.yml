@@ -69,6 +69,9 @@ certo_direct:
   login: 1
   password: vP6OwK3
 
+conekta:
+  key: key_eYvWV7gSDkNYXsmr
+
 cyber_source:
   login: X
   password: Y
