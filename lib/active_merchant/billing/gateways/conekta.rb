@@ -2,69 +2,69 @@ module ActiveMerchant #:nodoc:
     module Billing #:nodoc:
         class ConektaGateway < Gateway
             self.live_url = 'https://api.conekta.io/'
-            
+
             self.supported_countries = ['MX']
             self.supported_cardtypes = [:visa, :master, :american_express]
             self.homepage_url = 'https://conekta.io/'
             self.display_name = 'Conekta Gateway'
             self.money_format = :cents
             self.default_currency = 'MXN'
-            
+
             def initialize(options = {})
                 requires!(options, :key)
                 options[:version] ||= '0.3.0'
                 @options = options
                 super
             end
-            
+
             def purchase(money, payment_source, options = {})
                 post = {}
-                
+
                 add_order(post, money, options)
                 add_payment_source(post, payment_source, options)
                 add_details_data(post, options)
-                
+
                 commit(:post, 'charges', post)
             end
-            
+
             def authorize(money, payment_source, options = {})
                 post = {}
-                
+
                 add_order(post, money, options)
                 add_payment_source(post, payment_source, options)
                 add_details_data(post, options)
-                
+
                 post[:capture] = false
                 commit(:post, "charges", post)
             end
-            
+
             def capture(money, identifier, options = {})
                 post = {}
-                
+
                 post[:order_id] = identifier
                 add_order(post, money, options)
-                
+
                 commit(:post, "charges/#{identifier}/capture", post)
             end
-            
+
             def refund(money, identifier, options)
                 post = {}
-                
+
                 post[:order_id] = identifier
                 add_order(post, money, options)
-                
+
                 commit(:post, "charges/#{identifier}/refund", post)
             end
-            
+
             private
-            
+
             def add_order(post, money, options)
                 post[:description] = options[:description] || "Active Merchant Purchase"
                 post[:reference_id] = options[:order_id] if options[:order_id]
                 post[:currency] = (options[:currency] || currency(money)).downcase
                 post[:amount] = amount(money)
             end
-            
+
             def add_details_data(post, options)
                 details = {}
                 details[:name] = options[:customer] if options[:customer]
@@ -75,10 +75,10 @@ module ActiveMerchant #:nodoc:
                 add_billing_address(details, options)
                 add_line_items(details, options)
                 add_shipment(details, options)
-                
+
                 post[:details] = details
             end
-            
+
             def add_shipment(post, options)
                 shipment = {}
                 shipment[:carrier] = options[:carrier] if options[:carrier]
@@ -88,7 +88,7 @@ module ActiveMerchant #:nodoc:
                 add_shipment_address(shipment, options)
                 post[:shipment] = shipment
             end
-            
+
             def add_shipment_address(post, options)
                 if(address = options[:shipping_address])
                     post[:address] = {}
@@ -101,13 +101,13 @@ module ActiveMerchant #:nodoc:
                     post[:address][:zip] = address[:zip] if address[:zip]
                 end
             end
-            
+
             def add_line_items(post, options)
                 post[:line_items] = (options[:line_items] || []).collect do |line_item|
                     line_item
                 end
             end
-            
+
             def add_billing_address(post, options)
                 if(address = (options[:billing_address] || options[:address]))
                     post[:billing_address] = {}
@@ -125,7 +125,7 @@ module ActiveMerchant #:nodoc:
                     post[:billing_address][:email] = address[:email] if address[:email]
                 end
             end
-            
+
             def add_address(post, options)
                 if(address = (options[:billing_address] || options[:address]))
                     post[:address] = {}
@@ -138,7 +138,7 @@ module ActiveMerchant #:nodoc:
                     post[:address][:zip] = address[:zip] if address[:zip]
                 end
             end
-            
+
             def add_payment_source(post, payment_source, options)
                 if payment_source.kind_of?(String)
                     post[:card] = payment_source
@@ -152,23 +152,21 @@ module ActiveMerchant #:nodoc:
                     add_address(post[:card], options)
                 end
             end
-            
+
             def parse(body)
                 return {} unless body
                 JSON.parse(body)
             end
-            
+
             def headers(meta)
                 {
                     "Accept" => "application/vnd.conekta-v#{options[:version]}+json",
                     "Authorization" => "Basic " + Base64.encode64("#{options[:key]}:"),
                     "RaiseHtmlError" => "false",
-                    "Conekta-Client-User-Agent" => {"agent"=>"Conekta ActiveMerchantBindings/#{ActiveMerchant::VERSION}"}.to_json,
-                    "X-Conekta-Client-User-Agent" => user_agent,
-                    "X-Conekta-Client-User-Metadata" => meta.to_json
+                    "Conekta-Client-User-Agent" => {"agent"=>"Conekta ActiveMerchantBindings/#{ActiveMerchant::VERSION}"}.to_json
                 }
             end
-            
+
             def commit(method, url, parameters, options = {})
                 success = false
                 begin
@@ -179,7 +177,7 @@ module ActiveMerchant #:nodoc:
                     rescue JSON::ParserError
                     raw_response = json_error(raw_response)
                 end
-                
+
                 Response.new(
                              success,
                              raw_response["message"],
@@ -188,7 +186,7 @@ module ActiveMerchant #:nodoc:
                              authorization: raw_response["id"]
                              )
             end
-            
+
             def response_error(raw_response)
                 begin
                     parse(raw_response)
@@ -196,7 +194,7 @@ module ActiveMerchant #:nodoc:
                     json_error(raw_response)
                 end
             end
-            
+
             def json_error(raw_response)
                 msg = 'Invalid response received from the Conekta API.'
                 msg += "  (The raw response returned by the API was #{raw_response.inspect})"
