@@ -65,7 +65,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_merchant_data(post, options)
-        post[:user] = options.fetch(:login)
+        post[:user] = @options[:login]
       end
 
       def add_amount(post, money, options)
