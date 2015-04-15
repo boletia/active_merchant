@@ -25,7 +25,7 @@ module ActiveMerchant #:nodoc:
         add_address(post, creditcard, options)
         add_customer_data(post, options)
         add_amount(post, money, options)
-        add_deviceid(post, options)
+        add_device_info(post, options)
         add_merchant_data(post, options)
 
         commit(money, post)
@@ -60,8 +60,9 @@ module ActiveMerchant #:nodoc:
         post[:card_ccv2] = creditcard.verification_value
       end
 
-      def add_deviceid(post, options)
+      def add_device_info(post, options)
         post[:deviceid] = options[:deviceid]
+        post[:ip] = options[:ip]
       end
 
       def add_merchant_data(post, options)
