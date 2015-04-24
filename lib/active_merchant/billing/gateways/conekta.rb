@@ -63,6 +63,7 @@ module ActiveMerchant #:nodoc:
                 post[:reference_id] = options[:order_id] if options[:order_id]
                 post[:currency] = (options[:currency] || currency(money)).downcase
                 post[:amount] = amount(money)
+                post[:device_fingerprint] = options[:device_fingerprint] if options[:device_fingerprint]
             end
 
             def add_details_data(post, options)
