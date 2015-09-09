@@ -68,7 +68,7 @@ module ActiveMerchant #:nodoc:
 
             def add_details_data(post, options)
                 details = {}
-                details[:name] = options[:customer] if options[:customer]
+                details[:name] = options[:name] if options[:name]
                 details[:email] = options[:email] if options[:email]
                 details[:phone] = options[:phone] if options[:phone]
                 details[:device_fingerprint] = options[:device_fingerprint] if options[:device_fingerprint]
@@ -112,9 +112,9 @@ module ActiveMerchant #:nodoc:
             def add_billing_address(post, options)
                 if(address = (options[:billing_address] || options[:address]))
                     post[:billing_address] = {}
-                    post[:billing_address][:street1] = address[:address1] if address[:address1]
-                    post[:billing_address][:street2] = address[:address2] if address[:address2]
-                    post[:billing_address][:street3] = address[:address3] if address[:address3]
+                    post[:billing_address][:street1] = address[:street1] if address[:street1]
+                    post[:billing_address][:street2] = address[:street2] if address[:street2]
+                    post[:billing_address][:street3] = address[:street3] if address[:street3]
                     post[:billing_address][:city] = address[:city] if address[:city]
                     post[:billing_address][:state] = address[:state] if address[:state]
                     post[:billing_address][:country] = address[:country] if address[:country]
