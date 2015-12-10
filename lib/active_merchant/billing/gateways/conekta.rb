@@ -60,7 +60,7 @@ module ActiveMerchant #:nodoc:
 
             def add_order(post, money, options)
                 post[:description] = options[:description] || "Active Merchant Purchase"
-                post[:reference_id] = options[:order_id] if options[:order_id]
+                post[:reference_id] = options[:order_id].nil? ? options[:reference_id] : options[:order_id]
                 post[:currency] = (options[:currency] || currency(money)).downcase
                 post[:amount] = amount(money)
                 post[:device_fingerprint] = options[:device_fingerprint] if options[:device_fingerprint]
