@@ -550,6 +550,10 @@ verify:
   login: 'demo'
   password: 'password'
 
+vesta:
+  account_name: 'y+kLIDoU0ox77midoQSorA=='
+  password: 'PocH4jxAVaJwPnL2rgvD/8N7KQiucdZJJwCtHjHxLpIbxRWvUF2RpImWxB49Ht9y'
+  
 viaklix:
   login: LOGIN
   password: PASSWORD
