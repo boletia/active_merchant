@@ -5,7 +5,7 @@ require 'mocha/setup'
 class VestaTest < Test::Unit::TestCase
 
   def setup
-    @gateway = VestaGateway.new(account_name: 'y+kLIDoU0ox77midoQSorA==', password: 'PocH4jxAVaJwPnL2rgvD/8N7KQiucdZJJwCtHjHxLpIbxRWvUF2RpImWxB49Ht9y')
+    @gateway = VestaGateway.new(fixtures(:vesta))
     @credit_card = ActiveMerchant::Billing::CreditCard.new(
       number:             "340001234527890",
       verification_value: "183",

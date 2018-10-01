@@ -61,8 +61,6 @@ class RemoteVestaTest < Test::Unit::TestCase
     assert_success refund
     assert_equal "1", refund.params["ReversalAction"]
     assert_equal "10", refund.params["PaymentStatus"]
-
-    p refund
   end
 
   def test_successful_authorize

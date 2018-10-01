@@ -148,8 +148,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def success_from(response)
-        response.key?("ResponseCode") && (response["ResponseCode"] == "0")
-        #response.key?("ResponseCode") && [500,400].exclude?(response["ResponseCode"])
+        response.key?("ResponseCode") && (response["ResponseCode"] == "0" && response["PaymentStatus"] == "10")
       end
 
       def message_from(response)
