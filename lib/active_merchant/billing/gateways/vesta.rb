@@ -86,7 +86,7 @@ module ActiveMerchant #:nodoc:
         post[:StoreCard] = "false"
         post[:WebSessionID] = options[:device_fingerprint] if options[:device_fingerprint]
         post[:MerchantRoutingID] = "SandboxCredit01"
-        post[:RiskInformation] = "<riskinformation/>"
+        post[:RiskInformation] = options[:risk_information]
       end
 
       def add_address(post, creditcard, options)
@@ -148,7 +148,8 @@ module ActiveMerchant #:nodoc:
       end
 
       def success_from(response)
-        response.key?("ResponseCode") && (response["ResponseCode"] == "0" && response["PaymentStatus"] == "10")
+        valid_status = {"10"=>"complete" , "5"=>"authorized"}
+        response.key?("ResponseCode") && response["ResponseCode"] == "0" && valid_status.keys.include?(response["PaymentStatus"])
       end
 
       def message_from(response)

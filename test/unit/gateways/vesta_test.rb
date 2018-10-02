@@ -11,8 +11,8 @@ class VestaTest < Test::Unit::TestCase
       verification_value: "183",
       month:              "01",
       year:               "2019",
-      first_name:         "Mario F.",
-      last_name:          "Moreno Reyes"
+      first_name:         "Mario",
+      last_name:          "Reyes"
     )
 
     @declined_card = ActiveMerchant::Billing::CreditCard.new(
@@ -26,7 +26,7 @@ class VestaTest < Test::Unit::TestCase
 
     @amount = 100
     @options = {
-      :device_fingerprint => "41l9l92hjco6cuekf0c7dq68v4",
+      device_fingerprint:  "41l9l92hjco6cuekf0c7dq68v4",
       order_id: "345454tdf54hj8",
       description: 'Blue clip',
       billing_address: {
@@ -37,7 +37,8 @@ class VestaTest < Test::Unit::TestCase
         zip: "5555",
         name: "Mario Reyes",
         phone: "12345678",
-      }
+      },
+      risk_information: "<riskinformation/>"
     }
   end
 

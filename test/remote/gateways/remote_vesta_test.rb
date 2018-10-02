@@ -11,8 +11,8 @@ class RemoteVestaTest < Test::Unit::TestCase
       verification_value: "183",
       month:              "01",
       year:               "2019",
-      first_name:         "Mario F.",
-      last_name:          "Moreno Reyes"
+      first_name:         "Mario",
+      last_name:          "Moreno"
     )
 
     @declined_card = ActiveMerchant::Billing::CreditCard.new(
@@ -36,7 +36,8 @@ class RemoteVestaTest < Test::Unit::TestCase
         zip: "5555",
         name: "Mario Reyes",
         phone: "12345678",
-      }
+      },
+      risk_information: "<riskinformation/>"
     }
   end
 
@@ -48,7 +49,7 @@ class RemoteVestaTest < Test::Unit::TestCase
 
   def test_failed_purchase
     response = @gateway.purchase(@amount, @declined_card, @options)
-    assert_success response
+    assert_failure response
     assert_equal "1", response.params["PaymentStatus"]
   end
 
@@ -71,7 +72,7 @@ class RemoteVestaTest < Test::Unit::TestCase
 
   def test_unsuccessful_authorize
     assert response = @gateway.authorize(@amount, @declined_card, @options)
-    assert_success response
+    assert_failure response
     assert_equal nil, response.message
   end
 
