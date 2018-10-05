@@ -7,7 +7,7 @@ module ActiveMerchant #:nodoc:
       self.supported_countries = ['MX']
       self.default_currency = 'MXN'
       self.supported_cardtypes = [:visa, :master, :american_express]
-      self.money_format = :cents
+      self.money_format = :decimals
 
       self.homepage_url = 'https://trustvesta.com/'
       self.display_name = 'Vesta Gateway'
