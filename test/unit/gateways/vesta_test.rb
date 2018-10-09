@@ -38,6 +38,7 @@ class VestaTest < Test::Unit::TestCase
         name: "Mario Reyes",
         phone: "12345678",
       },
+      web_session_id: "101_2",
       risk_information: "<riskinformation/>"
     }
   end

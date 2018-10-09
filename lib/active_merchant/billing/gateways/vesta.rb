@@ -143,6 +143,7 @@ module ActiveMerchant #:nodoc:
           success_from(response),
           message_from(response),
           response,
+          code: fraud_code_from(response),
           authorization: authorization_from(response),
           test: test?
         )
@@ -184,6 +185,26 @@ module ActiveMerchant #:nodoc:
         post[:AccountName] = @credentials[:account_name]
         post[:Password] = @credentials[:password]
         post
+      end
+
+      def fraud_code_from(response)
+      return 'no fraud' if response["VestaDecisionCode"].blank?
+      codes = {
+                1701 => "Score exceeds risk system thresholds",
+                1702 => "Insufficient information for risk system to approve",
+                1703 => "Insufficient checking account history",
+                1704 => "Suspended account",
+                1705 => "Payment method type is not accepted",
+                1706 => "Duplicate transaction",
+                1707 => "Other payment(s) still in process",
+                1708 => "SSN and/or address did not pass bureau validation",
+                1709 => "Exceeds check amount limit",
+                1709 => "Exceeds check amount limit",
+                1710 => "High risk based upon checking account history (EWS)",
+                1711 => "Declined due to ACH regulations",
+                1712 => "Information provided does not match what is on file at bank"
+              }
+       codes[response["VestaDecisionCode"].to_s]
       end
     end
   end
