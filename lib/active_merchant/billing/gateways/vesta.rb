@@ -138,12 +138,13 @@ module ActiveMerchant #:nodoc:
         rescue StandardError => e
           response = e.message
         end
+        response[:code] = fraud_code_from(response) || error_code_from(response)
 
-        Response.new(
+        p 'HOLA MUNDO'
+        p Response.new(
           success_from(response),
           message_from(response),
           response,
-          code: fraud_code_from(response),
           authorization: authorization_from(response),
           test: test?
         )
@@ -175,9 +176,17 @@ module ActiveMerchant #:nodoc:
       end
 
       def error_code_from(response)
+        error_code = ""
         unless success_from(response)
-          # TODO: lookup error code for this response
+          error_code = response["ResponseText"].to_s
+          case response["PaymentStatus"]
+          when "1"
+            error_code += "Bank declined"
+          when "3"
+            error_code += "Merchant declined"
+          end
         end
+        error_code
       end
 
       def initialize_post()
@@ -188,7 +197,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def fraud_code_from(response)
-      return 'no fraud' if response["VestaDecisionCode"].blank?
+      return nil if response["VestaDecisionCode"].blank?
       codes = {
                 1701 => "Score exceeds risk system thresholds",
                 1702 => "Insufficient information for risk system to approve",
