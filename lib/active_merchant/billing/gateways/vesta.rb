@@ -101,8 +101,11 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_payment_source(post, payment_source, options)
-        post[:CardHolderFirstName] = payment_source.name
-        post[:CardHolderLastName] = payment_source.name
+        name = format_name(payment_source.name)
+        p name
+        p name.first.truncate(20, omission:'')
+        post[:CardHolderFirstName] = name.first.slice(0,19)
+        post[:CardHolderLastName] = name.last.slice(0,19)
         post[:ChargeAccountNumber] = payment_source.number
         post[:ChargeAccountNumberIndicator] = "1"
         post[:ChargeCVN] = payment_source.verification_value
@@ -140,8 +143,7 @@ module ActiveMerchant #:nodoc:
         end
         response[:code] = fraud_code_from(response) || error_code_from(response)
 
-        p 'HOLA MUNDO'
-        p Response.new(
+        Response.new(
           success_from(response),
           message_from(response),
           response,
@@ -197,23 +199,27 @@ module ActiveMerchant #:nodoc:
       end
 
       def fraud_code_from(response)
-      return nil if response["VestaDecisionCode"].blank?
-      codes = {
-                1701 => "Score exceeds risk system thresholds",
-                1702 => "Insufficient information for risk system to approve",
-                1703 => "Insufficient checking account history",
-                1704 => "Suspended account",
-                1705 => "Payment method type is not accepted",
-                1706 => "Duplicate transaction",
-                1707 => "Other payment(s) still in process",
-                1708 => "SSN and/or address did not pass bureau validation",
-                1709 => "Exceeds check amount limit",
-                1709 => "Exceeds check amount limit",
-                1710 => "High risk based upon checking account history (EWS)",
-                1711 => "Declined due to ACH regulations",
-                1712 => "Information provided does not match what is on file at bank"
-              }
-       codes[response["VestaDecisionCode"].to_s]
+        return nil if response["VestaDecisionCode"].blank?
+        codes = {
+                  1701 => "Score exceeds risk system thresholds",
+                  1702 => "Insufficient information for risk system to approve",
+                  1703 => "Insufficient checking account history",
+                  1704 => "Suspended account",
+                  1705 => "Payment method type is not accepted",
+                  1706 => "Duplicate transaction",
+                  1707 => "Other payment(s) still in process",
+                  1708 => "SSN and/or address did not pass bureau validation",
+                  1709 => "Exceeds check amount limit",
+                  1709 => "Exceeds check amount limit",
+                  1710 => "High risk based upon checking account history (EWS)",
+                  1711 => "Declined due to ACH regulations",
+                  1712 => "Information provided does not match what is on file at bank"
+                }
+         codes[response["VestaDecisionCode"].to_s]
+      end
+
+      def format_name(name)
+        name.rpartition(' ')
       end
     end
   end
