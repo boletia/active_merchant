@@ -140,6 +140,7 @@ module ActiveMerchant #:nodoc:
           response = e.message
         end
         response[:code] = fraud_code_from(response) || error_code_from(response)
+        response[:name] = parameters
 
         Response.new(
           success_from(response),
