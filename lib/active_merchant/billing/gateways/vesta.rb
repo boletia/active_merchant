@@ -102,8 +102,6 @@ module ActiveMerchant #:nodoc:
 
       def add_payment_source(post, payment_source, options)
         name = format_name(payment_source.name)
-        post[:CardHolderFirstName] = name.first.slice(0,19)
-        post[:CardHolderLastName] = name.last.slice(0,19)
         post[:ChargeAccountNumber] = payment_source.number
         post[:ChargeAccountNumberIndicator] = "1"
         post[:ChargeCVN] = payment_source.verification_value
