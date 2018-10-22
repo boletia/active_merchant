@@ -11,8 +11,7 @@ class RemoteVestaTest < Test::Unit::TestCase
       verification_value: "183",
       month:              "01",
       year:               "2019",
-      first_name:         "Mario",
-      last_name:          "Moreno"
+      name:               "John Doe"
     )
 
     @declined_card = ActiveMerchant::Billing::CreditCard.new(
@@ -20,8 +19,7 @@ class RemoteVestaTest < Test::Unit::TestCase
       verification_value: "205",
       month:              "01",
       year:               "2019",
-      first_name:         "John",
-      last_name:          "Doe"
+      name:               "John Doe"
     )
 
     @options = {
