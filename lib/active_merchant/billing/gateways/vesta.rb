@@ -48,8 +48,6 @@ module ActiveMerchant #:nodoc:
 
       def refund(money, payment, options={})
         post = initialize_post
-        add_order(post, money, options)
-        add_payment_source(post, payment, options)
         add_previous_payment_source(post, money, options)
         commit(:post, 'ReversePayment', post)
       end
@@ -113,6 +111,7 @@ module ActiveMerchant #:nodoc:
       def add_previous_payment_source(post, money, options)
         post[:RefundAmount] = amount(money)
         post[:PaymentID] = options[:payment_id]
+        post[:TransactionID] = options[:order_id]
         post[:ChargeAccountNumber] = nil
       end
 
