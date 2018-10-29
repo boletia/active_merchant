@@ -139,7 +139,7 @@ module ActiveMerchant #:nodoc:
           response = e.message
         end
 
-          response["code"] = fraud_code_from(response) || error_code_from(response)
+          response[:code] = fraud_code_from(response) || error_code_from(response)
           Response.new(
           success_from(response),
           message_from(response),
@@ -151,20 +151,20 @@ module ActiveMerchant #:nodoc:
 
       def success_from(response)
         valid_status = {"10"=>"complete" , "5"=>"authorized"}
-        response.key?("response_code") && response["response_code"] == "0" && valid_status.keys.include?(response["payment_status"])
+        response[:response_code] == "0" && valid_status.keys.include?(response[:payment_status])
       end
 
       def message_from(response)
-        if response["response_code"] == 0
+        if response[:response_code] == 0
           response.except(response_code)
         else
-          response["response_text"]
+          response[:response_text]
         end
       end
 
       def authorization_from(response)
-        if response["response_code"] == 0
-         response["payment_status"] == 10
+        if response[:response_code] == 0
+         response[:payment_status] == 10
         else
           false
         end
@@ -198,7 +198,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def fraud_code_from(response)
-        return nil if response["vesta_decision_code"].blank?
+        return nil if response[:vesta_decision_code].blank?
         codes = {
                   1701 => "Score exceeds risk system thresholds",
                   1702 => "Insufficient information for risk system to approve",
@@ -214,7 +214,7 @@ module ActiveMerchant #:nodoc:
                   1711 => "Declined due to ACH regulations",
                   1712 => "Information provided does not match what is on file at bank"
                 }
-         codes[response["vesta_decision_code"].to_s]
+         codes[response[:vesta_decision_code]]
       end
 
       def format_name(name)
@@ -226,20 +226,18 @@ module ActiveMerchant #:nodoc:
       end
 
       def format_response(response)
-        key_map = { "ResponseCode" => "response_code",
-                    "ChargeAccountLast4" => "charge_account_last4",
-                     "PaymentID" => "payment_id",
-                     "PaymentAcquirerName" => "payment_acquirer_name",
-                     "PaymentDeviceTypeCD" => "payment_device_type_cd",
-                     "PaymentDeviceTypeCD" => "payment_device_type_cd",
-                     "ChargeAccountFirst6" => "charge_account_first6",
-                     "PaymentStatus" => "payment_status",
-                     "ReversalAction" => "reversal_action",
-                     "ResponseText" => "response_text",
-                     "VestaDecisionCode" => "vesta_decision_code",
-                     "code" => "code"
+        key_map = { "ResponseCode" => :response_code,
+                    "ChargeAccountLast4" => :charge_account_last4,
+                     "PaymentID" => :payment_id,
+                     "PaymentAcquirerName" => :payment_acquirer_name,
+                     "PaymentDeviceTypeCD" => :payment_device_type_cd,
+                     "ChargeAccountFirst6" => :charge_account_first6,
+                     "PaymentStatus" => :payment_status,
+                     "ReversalAction" => :reversal_action,
+                     "ResponseText" => :response_text,
+                     "VestaDecisionCode" => :vesta_decision_code
                  }
-        response.map{|k, v| [key_map[k], v]}.to_h
+        p response.map{|k, v| [key_map[k], v]}.to_h
       end
     end
   end
