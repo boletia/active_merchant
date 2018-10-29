@@ -11,8 +11,7 @@ class VestaTest < Test::Unit::TestCase
       verification_value: "183",
       month:              "01",
       year:               "2019",
-      first_name:         "Mario",
-      last_name:          "Reyes"
+      name:               "John Doe"
     )
 
     @declined_card = ActiveMerchant::Billing::CreditCard.new(
@@ -20,8 +19,7 @@ class VestaTest < Test::Unit::TestCase
       verification_value: "205",
       month:              "01",
       year:               "2019",
-      first_name:         "John",
-      last_name:          "Doe"
+      name:               "John Doe"
     )
 
     @amount = 100
@@ -54,7 +52,7 @@ class VestaTest < Test::Unit::TestCase
   def test_failed_purchase
     @gateway.expects(:ssl_request).returns(failed_purchase_response)
     response = @gateway.purchase(@amount, @declined_card, @options)
-    assert_success response
+    assert_failure response
     assert_equal nil, response.message
     assert response.test?
   end
@@ -66,7 +64,7 @@ class VestaTest < Test::Unit::TestCase
     assert_equal nil, purchase.message
     assert purchase.test?
 
-    @options[:payment_id] = purchase.params["PaymentID"]
+    @options[:payment_id] = purchase.params["payment_id"]
     @gateway.expects(:ssl_request).returns(successful_refund_response)
     refund = @gateway.refund(@amount, @credit_card, @options)
     assert_success refund

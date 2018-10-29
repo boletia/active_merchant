@@ -49,18 +49,18 @@ class RemoteVestaTest < Test::Unit::TestCase
   def test_failed_purchase
     response = @gateway.purchase(@amount, @declined_card, @options)
     assert_failure response
-    assert_equal "1", response.params["PaymentStatus"]
+    assert_equal "1", response.params["payment_status"]
   end
 
   def test_successful_refund
     purchase = @gateway.purchase(@amount, @credit_card, @options)
     assert_success purchase
-    @options[:payment_id] = purchase.params["PaymentID"]
+    @options[:payment_id] = purchase.params["payment_id"]
 
     assert refund = @gateway.refund(@amount, @credit_card, @options)
     assert_success refund
-    assert_equal "1", refund.params["ReversalAction"]
-    assert_equal "10", refund.params["PaymentStatus"]
+    assert_equal "1", refund.params["reversal_action"]
+    assert_equal "10", refund.params["payment_status"]
   end
 
   def test_successful_authorize
@@ -79,7 +79,7 @@ class RemoteVestaTest < Test::Unit::TestCase
     assert authorize = @gateway.authorize(@amount, @credit_card, @options)
     assert_success authorize
     assert_equal nil, authorize.message
-    @options[:payment_id] = authorize.params["PaymentID"]
+    @options[:payment_id] = authorize.params["payment_id"]
 
     assert response = @gateway.capture(@amount, @credit_card, @options)
     assert_success response
