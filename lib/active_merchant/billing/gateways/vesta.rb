@@ -140,6 +140,7 @@ module ActiveMerchant #:nodoc:
         end
 
           response[:code] = fraud_code_from(response) || error_code_from(response)
+
           Response.new(
           success_from(response),
           message_from(response),
@@ -147,6 +148,7 @@ module ActiveMerchant #:nodoc:
           authorization: authorization_from(response),
           test: test?
         )
+
       end
 
       def success_from(response)
@@ -177,8 +179,8 @@ module ActiveMerchant #:nodoc:
       def error_code_from(response)
         error_code = ""
         unless success_from(response)
-          error_code = response["response_text"].to_s
-          case response["payment_status"]
+          error_code = response[:response_text].to_s
+          case response[:payment_status]
           when "1"
             error_code += "Bank declined"
           when "3"
@@ -237,7 +239,7 @@ module ActiveMerchant #:nodoc:
                      "ResponseText" => :response_text,
                      "VestaDecisionCode" => :vesta_decision_code
                  }
-        p response.map{|k, v| [key_map[k], v]}.to_h
+        response.map{|k, v| [key_map[k], v]}.to_h
       end
     end
   end
