@@ -186,7 +186,7 @@ module ActiveMerchant #:nodoc:
           when "3"
             error_code += "Merchant declined"
           when "6"
-            "Authorization communication error. Try again"
+            error_code += "Communication error"
           end
         end
         error_code
