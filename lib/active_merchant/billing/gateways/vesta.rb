@@ -179,15 +179,15 @@ module ActiveMerchant #:nodoc:
       def error_code_from(response)
         error_code = ""
         unless success_from(response)
-          error_code = response[:response_text].to_s
           case response[:payment_status]
           when "1"
-            error_code += "Bank declined"
+            error_code += "bank_declined"
           when "3"
-            error_code += "Merchant declined"
+            error_code += "merchant_declined"
           when "6"
-            error_code += "Communication error"
+            error_code += "communication_error"
           end
+          error_code ||= response[:response_text].to_s
         end
         error_code
       end
