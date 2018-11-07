@@ -2,7 +2,7 @@ module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class VestaGateway < Gateway
       self.test_url = 'https://vsafesandbox.ecustomersupport.com/GatewayV4Proxy/Service/'
-      self.live_url = 'https://vsafe1.ecustomerpayments.com/GatewayV4Proxy/Service/'
+      self.live_url = 'https://vsafesandbox.ecustomersupport.com/GatewayV4Proxy/Service/'
 
       self.supported_countries = ['MX']
       self.default_currency = 'MXN'
