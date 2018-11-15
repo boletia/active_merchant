@@ -2,7 +2,7 @@ module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class VestaGateway < Gateway
       self.test_url = 'https://vsafesandbox.ecustomersupport.com/GatewayV4Proxy/Service/'
-      self.live_url = 'https://vsafesandbox.ecustomersupport.com/GatewayV4Proxy/Service/'
+      self.live_url = 'https://vsafe1.ecustomerpayments.com/GatewayV4Proxy/Service/'
 
       self.supported_countries = ['MX']
       self.default_currency = 'MXN'
@@ -18,6 +18,7 @@ module ActiveMerchant #:nodoc:
       def initialize(options={})
         requires!(options, :account_name, :password)
         options[:version] ||= '3.3.1'
+        @credentials = (test? ? test_url : live_url)
         @credentials = options
         super
       end
@@ -223,6 +224,8 @@ module ActiveMerchant #:nodoc:
         arr = name.rpartition(' ')
         if arr[0].blank?
           arr[0] = arr[2]
+        elsif arr[2].blank?
+          arr[2] = arr[0]
         end
         arr
       end
