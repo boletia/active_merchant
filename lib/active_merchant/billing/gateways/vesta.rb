@@ -85,7 +85,7 @@ module ActiveMerchant #:nodoc:
         post[:StoreCard] = "false"
         post[:WebSessionID] = options[:web_session_id] if options[:web_session_id]
         post[:Fingerprint] = options[:fingerprint] if options[:fingerprint]
-        post[:MerchantRoutingID] = "SandboxCredit01"
+        post[:MerchantRoutingID] = (test? ? "SandboxCredit01" : "18000000000006702000")
         post[:RiskInformation] = options[:risk_information]
       end
 
