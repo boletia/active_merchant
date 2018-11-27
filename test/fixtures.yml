@@ -553,7 +553,9 @@ verify:
 vesta:
   account_name: 'y+kLIDoU0ox77midoQSorA=='
   password: 'PocH4jxAVaJwPnL2rgvD/8N7KQiucdZJJwCtHjHxLpIbxRWvUF2RpImWxB49Ht9y'
-  
+  merchant_id: 'SandboxCredit01'
+  live_url: 'https://vsafesandbox.ecustomersupport.com/GatewayV4Proxy/Service/'
+
 viaklix:
   login: LOGIN
   password: PASSWORD

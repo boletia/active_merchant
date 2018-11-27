@@ -1,8 +1,6 @@
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class VestaGateway < Gateway
-      self.test_url = 'https://vsafesandbox.ecustomersupport.com/GatewayV4Proxy/Service/'
-      self.live_url = 'https://vsafe1.ecustomerpayments.com/GatewayV4Proxy/Service/'
 
       self.supported_countries = ['MX']
       self.default_currency = 'MXN'
@@ -16,9 +14,8 @@ module ActiveMerchant #:nodoc:
       STANDARD_ERROR_CODE_MAPPING = {}
 
       def initialize(options={})
-        requires!(options, :account_name, :password)
+        requires!(options, :account_name, :password, :merchant_id, :live_url)
         options[:version] ||= '3.3.1'
-        @credentials = (test? ? test_url : live_url)
         @credentials = options
         super
       end
@@ -85,8 +82,8 @@ module ActiveMerchant #:nodoc:
         post[:StoreCard] = "false"
         post[:WebSessionID] = options[:web_session_id] if options[:web_session_id]
         post[:Fingerprint] = options[:fingerprint] if options[:fingerprint]
-        post[:MerchantRoutingID] = (test? ? "SandboxCredit01" : "18000000000006702000")
         post[:RiskInformation] = options[:risk_information]
+        post[:MerchantRoutingID] = @credentials[:merchant_id]
       end
 
       def add_address(post, creditcard, options)
@@ -128,7 +125,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def commit(method, action, parameters)
-        url = (test? ? test_url : live_url)
+        url = @credentials[:live_url]
         raw_response = parse(ssl_request(method, url + action, (parameters ? parameters.to_json : nil),  headers))
         begin
           response = format_response(raw_response)
@@ -211,7 +208,6 @@ module ActiveMerchant #:nodoc:
                   1706 => "Duplicate transaction",
                   1707 => "Other payment(s) still in process",
                   1708 => "SSN and/or address did not pass bureau validation",
-                  1709 => "Exceeds check amount limit",
                   1709 => "Exceeds check amount limit",
                   1710 => "High risk based upon checking account history (EWS)",
                   1711 => "Declined due to ACH regulations",

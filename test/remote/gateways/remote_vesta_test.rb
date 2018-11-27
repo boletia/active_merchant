@@ -87,7 +87,7 @@ class RemoteVestaTest < Test::Unit::TestCase
   end
 
   def test_invalid_login
-    gateway = VestaGateway.new(account_name: 'invalid', password: 'invalid')
+    gateway = VestaGateway.new(account_name: 'invalid', password: 'invalid', merchant_id: 'invalid', live_url: fixtures(:vesta)[:live_url])
     response = gateway.purchase(@amount, @credit_card, @options)
     assert_match "Login failed", response.message
   end
