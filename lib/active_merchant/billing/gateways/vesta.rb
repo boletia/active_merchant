@@ -236,7 +236,9 @@ module ActiveMerchant #:nodoc:
                      "PaymentStatus" => :payment_status,
                      "ReversalAction" => :reversal_action,
                      "ResponseText" => :response_text,
-                     "VestaDecisionCode" => :vesta_decision_code
+                     "VestaDecisionCode" => :vesta_decision_code,
+                     "AuthorizedAmount" => :authorized_amount,
+                     "AvailableRefundAmount" => :available_refund_amount
                  }
         response.map{|k, v| [key_map[k], v]}.to_h
       end
