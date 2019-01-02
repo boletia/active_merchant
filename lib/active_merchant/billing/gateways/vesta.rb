@@ -90,7 +90,7 @@ module ActiveMerchant #:nodoc:
         if(address = (options[:billing_address] || options[:address] ))
           post[:CardHolderAddressLine1] = truncate(address[:address1], 30) if address[:address1]
           post[:CardHolderCity] = address[:city] if address[:city]
-          post[:CardHolderRegion] = "MX"
+          post[:CardHolderRegion] = "DF"
           post[:CardHolderPostalCode] = address[:zip] if address[:zip]
           post[:CardHolderCountryCode] = "MX"
         end
