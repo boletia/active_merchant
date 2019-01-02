@@ -88,9 +88,9 @@ module ActiveMerchant #:nodoc:
 
       def add_address(post, creditcard, options)
         if(address = (options[:billing_address] || options[:address] ))
-          post[:CardHolderAddressLine1] = address[:address1] if address[:address1]
+          post[:CardHolderAddressLine1] = truncate(address[:address1], 30) if address[:address1]
           post[:CardHolderCity] = address[:city] if address[:city]
-          post[:CardHolderRegion] = "DF"
+          post[:CardHolderRegion] = "MX"
           post[:CardHolderPostalCode] = address[:zip] if address[:zip]
           post[:CardHolderCountryCode] = "MX"
         end
@@ -224,6 +224,10 @@ module ActiveMerchant #:nodoc:
           arr[2] = arr[0]
         end
         arr
+      end
+
+      def truncate(string, max)
+        string.length > max ? "#{string[0...max]}..." : string
       end
 
       def format_response(response)
