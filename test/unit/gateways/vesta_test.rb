@@ -30,8 +30,9 @@ class VestaTest < Test::Unit::TestCase
       billing_address: {
         address1: "Rio Missisipi #123",
         address2: "Paris",
-        city: "Guerrero",
-        country: "Mexico",
+        city: "Acapulco",
+        region: "Guerrero",
+        country: "MX,
         zip: "5555",
         name: "Mario Reyes",
         phone: "12345678",
